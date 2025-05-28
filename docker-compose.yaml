@@ -3,7 +3,7 @@ services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
-      SA_PASSWORD: "YourStrong!Passw0rd"
+      SA_PASSWORD: "CHANGEME"
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
