@@ -6,3 +6,5 @@ The IFormulaStrategy interface defines the Basic Metabolic Rate calculation meth
 
 I used dependency injection on this project to be able to implement different strategies in a clean way rather than having to build out the dependencies around the codebase, the same benefit the strategy pattern provides.
 Each strategy is injected as a transient service as each calculation is only required once and is likely to be different when it is next called. The resolvers are registered as singletons because they are stateless and only return strategy instances which are registered as transient. This ensures that each time a strategy is resolved a new instance is used for accurate and isolated calculations. Registering the resolver as a singleton reduces overhead by creating only one instance of the resolver for the application's lifetime, improving memory efficiency without affecting correctness.
+
+The database runs in a linux container and entity framework migrations are used to keep the database up to date.
