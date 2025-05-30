@@ -26,6 +26,31 @@ var host = Host.CreateDefaultBuilder(args)
 using var scope = host.Services.CreateScope();
 var provider = scope.ServiceProvider;
 
+Console.WriteLine("Hi! If you are an existing user, please enter your UserId to retrieve your current TDEE. If you are a new user, you can skip this step.");
+var idEntry = Console.ReadLine();
+
+if (!string.IsNullOrEmpty(idEntry) && int.TryParse(idEntry, out int userId))
+{
+    try
+    {
+        await DatabaseHelper.GetCurrentTDEE(userId);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error retrieving current TDEE: {ex.Message}");
+        throw;
+    }
+}
+else
+{
+    Console.WriteLine("No UserId provided or invalid input. Proceeding to TDEE calculation. Enter Name: ");
+    string name = Console.ReadLine()!;
+    userId = await DatabaseHelper.CreateNewUser(new WeightTracker.Models.Users
+    {
+        Name = name
+    });
+}
+
 Console.Write("Enter your weight (kg): ");
 double weight = double.Parse(Console.ReadLine()!);
 
@@ -48,6 +73,20 @@ var activity = provider.GetRequiredService<ActivityStrategyResolver>().Resolve(a
 
 var calculator = new TDEECalculator(formula, activity);
 var tdee = calculator.CalculateTDEE(weight, height, age, sex);
+
+try
+{
+    await DatabaseHelper.AddEntry(new WeightTracker.Models.Entries
+    {
+        UserId = userId,
+        Weight = (decimal)weight,
+        TDEE = (int)tdee
+    });
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Error saving entry: {ex.Message}");
+}
 
 Console.WriteLine($"\nUsing formula: {formula.Name}");
 Console.WriteLine($"Your estimated TDEE is: {tdee:F2} kcal/day");
