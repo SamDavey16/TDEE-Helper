@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using WeightTracker.Models;
 using WeightTracker.Services;
 
@@ -41,6 +42,25 @@ namespace WeightTracker.Helpers
                 {
                     Console.WriteLine($"User with ID {UserId} not found.");
                 }
+            }
+        }
+
+        public static async Task AddEntry(Entries entry)
+        {
+            using (var context = new Context(_options))
+            {
+                context.Entries.Add(entry);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public static async Task<int> CreateNewUser(Users user)
+        {
+            using (var context = new Context(_options))
+            {
+                context.Users.Add(user);
+                await context.SaveChangesAsync();
+                return user.Id;
             }
         }
     }
