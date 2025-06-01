@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WeightTracker.Helpers;
+using WeightTracker.Interfaces;
 using WeightTracker.Services;
 using WeightTracker.Services.ActivityLevelStrategies;
 
@@ -20,12 +21,15 @@ var host = Host.CreateDefaultBuilder(args)
                 services.AddTransient<MifflinStJeorFormula>();
                 services.AddTransient<HarrisBenedictFormula>();
                 services.AddSingleton<TDEEFormulaResolver>();
+
+                services.AddScoped<IDatabaseHelper, DatabaseHelper>();
             })
             .Build();
 
 using var scope = host.Services.CreateScope();
 var provider = scope.ServiceProvider;
 
+var dbHelper = provider.GetRequiredService<IDatabaseHelper>();
 Console.WriteLine("Hi! If you are an existing user, please enter your UserId to retrieve your current TDEE. If you are a new user, you can skip this step.");
 var idEntry = Console.ReadLine();
 
@@ -33,7 +37,7 @@ if (!string.IsNullOrEmpty(idEntry) && int.TryParse(idEntry, out int userId))
 {
     try
     {
-        await DatabaseHelper.GetCurrentTDEE(userId);
+        await dbHelper.GetCurrentTDEE(userId);
     }
     catch (Exception ex)
     {
@@ -45,7 +49,7 @@ else
 {
     Console.WriteLine("No UserId provided or invalid input. Proceeding to TDEE calculation. Enter Name: ");
     string name = Console.ReadLine()!;
-    userId = await DatabaseHelper.CreateNewUser(new WeightTracker.Models.Users
+    userId = await dbHelper.CreateNewUser(new WeightTracker.Models.Users
     {
         Name = name
     });
@@ -76,7 +80,7 @@ var tdee = calculator.CalculateTDEE(weight, height, age, sex);
 
 try
 {
-    await DatabaseHelper.AddEntry(new WeightTracker.Models.Entries
+    await dbHelper.AddEntry(new WeightTracker.Models.Entries
     {
         UserId = userId,
         Weight = (decimal)weight,
