@@ -9,7 +9,7 @@ namespace WeightTracker.Interfaces
 {
     public interface IDatabaseHelper
     {
-        Task GetCurrentTDEE(int userId);
+        Task<int> GetCurrentTDEE(int userId);
         Task AddEntry(Entries entry);
         Task<int> CreateNewUser(Users user);
     }
