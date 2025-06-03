@@ -11,4 +11,4 @@ The database runs in a linux container and entity framework migrations are used 
 
 xunit is used as the unit testing framework having been chosen for its wide array of features, integration with .NET core and test isolation. This allows for the application to be checked easily for any issues without the need for extensive manual testing.
 
-Currently running as a web API, working on react frontend.
+Currently running as a web API with a react frontend.
