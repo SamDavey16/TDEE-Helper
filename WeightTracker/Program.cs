@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
 using WeightTracker.Helpers;
 using WeightTracker.Interfaces;
 using WeightTracker.Services;
@@ -43,6 +44,16 @@ app.UseHttpsRedirection();
 app.UseCors(); 
 app.UseAuthorization();
 app.MapControllers();
+
+app.UseSpa(spa =>
+{
+    spa.Options.SourcePath = "clientapp";
+
+    if (app.Environment.IsDevelopment())
+    {
+        spa.UseReactDevelopmentServer(npmScript: "start");
+    }
+});
 
 app.MapGet("/", context =>
 {
