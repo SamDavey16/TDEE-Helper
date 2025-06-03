@@ -1,0 +1,13 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/WeightTracker.Tests/bin/Debug
+/WeightTracker.Tests/obj/Debug
+/WeightTracker.Tests/obj/project.assets.json
+/WeightTracker.Tests/obj/project.nuget.cache
+/WeightTracker.Tests/obj/WeightTracker.Tests.csproj.nuget.dgspec.json
+/WeightTracker.Tests/obj/WeightTracker.Tests.csproj.nuget.g.props
+/WeightTracker.Tests/obj/WeightTracker.Tests.csproj.nuget.g.targets
+/WeightTracker/bin/Debug
+/.vs
