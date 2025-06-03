@@ -45,16 +45,6 @@ app.UseCors();
 app.UseAuthorization();
 app.MapControllers();
 
-app.UseSpa(spa =>
-{
-    spa.Options.SourcePath = "clientapp";
-
-    if (app.Environment.IsDevelopment())
-    {
-        spa.UseReactDevelopmentServer(npmScript: "start");
-    }
-});
-
 app.MapGet("/", context =>
 {
     context.Response.Redirect("/swagger");
