@@ -17,7 +17,7 @@ namespace WeightTracker.Helpers
             _context = context;
         }
 
-        public async Task GetCurrentTDEE(int UserId)
+        public async Task<int> GetCurrentTDEE(int UserId)
         {
             
             var userEntry = await _context.Entries
@@ -27,13 +27,12 @@ namespace WeightTracker.Helpers
 
             if (userEntry != null)
             {
-                Console.WriteLine($"Current TDEE for User {UserId}: {userEntry.TDEE}");
+                return userEntry.TDEE;
             }
             else
             {
-                Console.WriteLine($"User with ID {UserId} not found.");
+                return 0;
             }
-            
         }
 
         public async Task AddEntry(Entries entry)
