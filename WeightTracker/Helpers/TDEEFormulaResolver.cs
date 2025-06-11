@@ -16,8 +16,8 @@ namespace WeightTracker.Helpers
         public IFormulaStrategy Resolve(string input) =>
             input switch
             {
-                "1" => _provider.GetRequiredService<MifflinStJeorFormula>(),
-                "2" => _provider.GetRequiredService<HarrisBenedictFormula>(),
+                "MifflinStJeorFormula" => _provider.GetRequiredService<MifflinStJeorFormula>(),
+                "HarrisBenedictFormula" => _provider.GetRequiredService<HarrisBenedictFormula>(),
                 _ => throw new ArgumentException("Invalid formula selection")
             };
     }

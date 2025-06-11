@@ -16,9 +16,9 @@ namespace WeightTracker.Helpers
         public IActivityLevelStrategy Resolve(string input) =>
             input switch
             {
-                "1" => _provider.GetRequiredService<Sedentry>(),
-                "2" => _provider.GetRequiredService<Moderate>(),
-                "3" => _provider.GetRequiredService<VeryActive>(),
+                "Sedentry" => _provider.GetRequiredService<Sedentry>(),
+                "Moderate" => _provider.GetRequiredService<Moderate>(),
+                "VeryActive" => _provider.GetRequiredService<VeryActive>(),
                 _ => throw new ArgumentException("Invalid activity level")
             };
     }
