@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using WeightTracker.Helpers;
 using WeightTracker.Interfaces;
 using WeightTracker.Models;
@@ -28,13 +29,15 @@ public class TDEEController : ControllerBase
     }
 
     [HttpPost("tdee/calculate")]
-    public IActionResult CalculateTDEE([FromBody] Entries dto)
+    public async Task<IActionResult> CalculateTDEE([FromBody] Entries dto)
     {
         var formula = _formulaResolver.Resolve(dto.FormulaChoice);
         var activity = _activityResolver.Resolve(dto.ActivityChoice);
 
         var calculator = new TDEECalculator(formula, activity);
         var tdee = calculator.CalculateTDEE(dto.Weight, dto.Height, dto.Age, dto.Sex);
+
+        await _dbHelper.AddEntry(dto);
 
         return Ok(new { TDEE = tdee });
     }

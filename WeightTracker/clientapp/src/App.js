@@ -45,6 +45,7 @@ function App() {
                     sex: entry.sex,
                     formulaChoice: entry.formulaChoice,
                     activityChoice: entry.activityChoice,
+                    userId: userId,
                 }),
             });
             const data = await res.json();
