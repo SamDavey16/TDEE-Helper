@@ -35,7 +35,8 @@ public class TDEEController : ControllerBase
         var activity = _activityResolver.Resolve(dto.ActivityChoice);
 
         var calculator = new TDEECalculator(formula, activity);
-        var tdee = calculator.CalculateTDEE(dto.Weight, dto.Height, dto.Age, dto.Sex);
+        int tdee = Convert.ToInt32(calculator.CalculateTDEE(dto.Weight, dto.Height, dto.Age, dto.Sex));
+        dto.TDEE = tdee;
 
         await _dbHelper.AddEntry(dto);
 
