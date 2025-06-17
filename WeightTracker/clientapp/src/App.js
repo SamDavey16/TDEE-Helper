@@ -3,6 +3,7 @@ import React, { useState } from "react";
 function App() {
     const [userName, setUserName] = useState("");
     const [userId, setUserId] = useState(null);
+    const [manualUserId, setManualUserId] = useState(""); // NEW
     const [entry, setEntry] = useState({
         weight: "",
         height: "",
@@ -55,10 +56,10 @@ function App() {
         }
     };
 
-    const getSavedTDEE = async () => {
+    const getSavedTDEE = async (idToFetch = userId) => {
         setError(null);
         try {
-            const res = await fetch(`/api/tdee/users/${userId}/tdee`);
+            const res = await fetch(`/api/tdee/users/${idToFetch}/tdee`);
             if (!res.ok) {
                 throw new Error("User not found or no saved TDEE");
             }
@@ -88,68 +89,74 @@ function App() {
             </section>
 
             {userId && (
-                <>
-                    <section style={{ marginBottom: 20 }}>
-                        <h2>Calculate TDEE</h2>
-                        <input
-                            type="number"
-                            placeholder="Weight (kg)"
-                            value={entry.weight}
-                            onChange={(e) => setEntry({ ...entry, weight: e.target.value })}
-                            style={{ padding: 8, width: "100%", marginBottom: 10 }}
-                        />
-                        <input
-                            type="number"
-                            placeholder="Height (cm)"
-                            value={entry.height}
-                            onChange={(e) => setEntry({ ...entry, height: e.target.value })}
-                            style={{ padding: 8, width: "100%", marginBottom: 10 }}
-                        />
-                        <input
-                            type="number"
-                            placeholder="Age"
-                            value={entry.age}
-                            onChange={(e) => setEntry({ ...entry, age: e.target.value })}
-                            style={{ padding: 8, width: "100%", marginBottom: 10 }}
-                        />
-                        <select
-                            value={entry.sex}
-                            onChange={(e) => setEntry({ ...entry, sex: e.target.value })}
-                            style={{ padding: 8, width: "100%", marginBottom: 10 }}
-                        >
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                        </select>
-                        <select
-                            value={entry.formulaChoice}
-                            onChange={(e) => setEntry({ ...entry, formulaChoice: e.target.value })}
-                            style={{ padding: 8, width: "100%", marginBottom: 10 }}
-                        >
-                            <option value="MifflinStJeorFormula">Mifflin St Jeor</option>
-                            <option value="HarrisBenedictFormula">Harris Benedict</option>
-                        </select>
-                        <select
-                            value={entry.activityChoice}
-                            onChange={(e) => setEntry({ ...entry, activityChoice: e.target.value })}
-                            style={{ padding: 8, width: "100%", marginBottom: 10 }}
-                        >
-                            <option value="Sedentry">Sedentry</option>
-                            <option value="Moderate">Moderate</option>
-                            <option value="VeryActive">Very Active</option>
-                        </select>
-                        <button onClick={calculateTDEE} disabled={!entry.weight || !entry.height || !entry.age}>
-                            Calculate TDEE
-                        </button>
-                        {tdeeResult !== null && <p>Your calculated TDEE: <b>{tdeeResult}</b></p>}
-                    </section>
-
-                    <section>
-                        <h2>Get Saved TDEE</h2>
-                        <button onClick={getSavedTDEE}>Get Saved TDEE for User ID {userId}</button>
-                        {savedTDEE !== null && <p>Saved TDEE: <b>{savedTDEE}</b></p>}
-                    </section>
-                </>
+                <section style={{ marginBottom: 20 }}>
+                    <h2>Calculate TDEE</h2>
+                    <input
+                        type="number"
+                        placeholder="Weight (kg)"
+                        value={entry.weight}
+                        onChange={(e) => setEntry({ ...entry, weight: e.target.value })}
+                        style={{ padding: 8, width: "100%", marginBottom: 10 }}
+                    />
+                    <input
+                        type="number"
+                        placeholder="Height (cm)"
+                        value={entry.height}
+                        onChange={(e) => setEntry({ ...entry, height: e.target.value })}
+                        style={{ padding: 8, width: "100%", marginBottom: 10 }}
+                    />
+                    <input
+                        type="number"
+                        placeholder="Age"
+                        value={entry.age}
+                        onChange={(e) => setEntry({ ...entry, age: e.target.value })}
+                        style={{ padding: 8, width: "100%", marginBottom: 10 }}
+                    />
+                    <select
+                        value={entry.sex}
+                        onChange={(e) => setEntry({ ...entry, sex: e.target.value })}
+                        style={{ padding: 8, width: "100%", marginBottom: 10 }}
+                    >
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                    <select
+                        value={entry.formulaChoice}
+                        onChange={(e) => setEntry({ ...entry, formulaChoice: e.target.value })}
+                        style={{ padding: 8, width: "100%", marginBottom: 10 }}
+                    >
+                        <option value="MifflinStJeorFormula">Mifflin St Jeor</option>
+                        <option value="HarrisBenedictFormula">Harris Benedict</option>
+                    </select>
+                    <select
+                        value={entry.activityChoice}
+                        onChange={(e) => setEntry({ ...entry, activityChoice: e.target.value })}
+                        style={{ padding: 8, width: "100%", marginBottom: 10 }}
+                    >
+                        <option value="Sedentry">Sedentry</option>
+                        <option value="Moderate">Moderate</option>
+                        <option value="VeryActive">Very Active</option>
+                    </select>
+                    <button onClick={calculateTDEE} disabled={!entry.weight || !entry.height || !entry.age}>
+                        Calculate TDEE
+                    </button>
+                    {tdeeResult !== null && <p>Your calculated TDEE: <b>{tdeeResult}</b></p>}
+                </section>
             )}
+
+            <section>
+                <h2>Get Saved TDEE</h2>
+                <input
+                    placeholder="Enter User ID"
+                    value={manualUserId}
+                    onChange={(e) => setManualUserId(e.target.value)}
+                    style={{ padding: 8, width: "100%", marginBottom: 10 }}
+                />
+                <button onClick={() => getSavedTDEE(manualUserId)} disabled={!manualUserId}>
+                    Get Saved TDEE by User ID
+                </button>
+                {savedTDEE !== null && <p>Saved TDEE: <b>{savedTDEE}</b></p>}
+            </section>
 
             {error && <p style={{ color: "red" }}>{error}</p>}
         </div>
@@ -157,4 +164,5 @@ function App() {
 }
 
 export default App;
+
 
